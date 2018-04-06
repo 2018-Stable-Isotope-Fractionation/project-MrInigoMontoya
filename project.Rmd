@@ -14,6 +14,7 @@ editor_options:
 
 ```{r "load packages", include=FALSE}
 library(tidyverse)
+knitr::opts_chunk$set(eval = FALSE)
 ```
 
 # C3
@@ -23,7 +24,7 @@ knitr::include_graphics("actualC3model.png")
 ```
 
 
-```{r}
+```{r eval=TRUE}
 # fractionation factors (assumed constant)
 eps_diff_air <- -4.4
 eps_fix <- -25
@@ -37,7 +38,7 @@ C3 <-
 C3
 ```
 
-```{r}
+```{r eval=TRUE}
 # define base plot
 base_plot <- ggplot() + 
   aes(x = r, y = eps_org_vs_atm) +
@@ -50,13 +51,17 @@ base_plot <- ggplot() +
 base_plot %+% C3
 ```
 
+## Question
+
+> How do you interpret this plot?
+
 # C4
 
 ```{r out.width = "100%", echo=FALSE, eval=TRUE}
 knitr::include_graphics("actualC4model.png") 
 ```
 
-```{r}
+```{r eval=TRUE}
 # fractionation factors (assumed constant)
 eps_HCO3_CO2 <- 7.9
 eps_PEP <- -2.2
@@ -73,14 +78,18 @@ C4 <-
 C4
 ```
 
-```{r}
+```{r eval=TRUE}
 # put C4 into the base plot
 base_plot %+% C4 
 ```
 
-## Different values for L
+## Question
 
-```{r}
+> How do you interpret this plot?
+
+# C4 continued: different values for L
+
+```{r eval=TRUE}
 C4 <- 
   # using expand.grid to make a combination of all r and L values
   expand.grid(
@@ -95,16 +104,20 @@ C4 <-
 C4
 ```
 
-```{r}
+```{r eval=TRUE}
 # now put C4 into the base plot, and add additional aesthetics (color for L)
 base_plot %+% C4 %+% aes(color = factor(L)) +
   scale_color_manual(name = "leakage (L)", values = RColorBrewer::brewer.pal(8, "Dark2"), 
                      labels = function(x) paste(100*as.numeric(x), "%"))
 ```
 
-## Combining C3 and C4
+## Question
 
-```{r}
+> How do you interpret this plot?
+
+# C3 vs C4
+
+```{r eval=TRUE}
 C3C4 <- bind_rows(
   C3 %>% mutate(pathway = "C3", L = "N/A"),
   C4 %>% mutate(pathway = "C4", L = factor(L))
@@ -118,9 +131,11 @@ p <- base_plot %+% C3C4 %+% aes(color = factor(L), linetype = pathway) +
 p
 ```
 
-# Exercises
+## Question 1
 
 > What are we seeing here? What are differences between C3 and C4 plants (how does L affect C4)?
+
+## Question 2
 
 > Farquhar et al., 1989 plotted a similar graph (reversibility vs. discrimination factor). Which is the C4 plant and how do you know? What is different about their graph, compared to ours?
 
@@ -128,8 +143,7 @@ p
 knitr::include_graphics("fig2_1.png") 
 ```
 
-
-## Exercise 1: Determining $\delta^{13}C$ of plant biomass
+## Question 3
 
 When we measure plant isotopes we typically measure isotope ratios of plant biomass (Figure 1). 
 ```{r out.width = "100%", echo=FALSE, eval=TRUE}
@@ -148,6 +162,7 @@ org <- C3C4 %>%
 p %+% org %+% aes(y = delta_biomass)
 ```
 
+## Question 4
 
 > How do these values compare to O'Leary's isotope calculations for C3 and C4 plants (Table 2)?
 
@@ -156,7 +171,7 @@ p %+% org %+% aes(y = delta_biomass)
 knitr::include_graphics("OLeary_table2.png") 
 ```
 
-## Exercise 2: Effects of temperature on C4 photosynthesis 
+## Question 5 
 
 Mook et al, 1974 - investigated the isotope fractionation between dissolved bicarbonate and gaseous and dissolved carbon dioxide. 
 
@@ -165,7 +180,6 @@ $$
 $$
 
 > Why would we care about this equilibrium fractionation (between CO2 and HCO3) when talking specifically about C4 plants?
-
 
 ```{r}
 #' function to calculate the equilibrium fractionation between bicarbonate and CO2
@@ -179,8 +193,11 @@ calc_eps_HCO3_CO2 <- function(temperature.C) {
 calc_eps_HCO3_CO2(25)
 ```
 
+## Question 6
+
 > How does the isotope fractionation between bicarbonate and carbon dioxide affect the $\delta^{13}C$ value of C4 plants? 
 
+## Question 7
 
 > The equation above is calculated for 25ºC. What happens when we change the temperature? Plot the $\epsilon_{org/atm}$ for maize with a $\epsilon_{HCO_3/CO_2}$ at temperature range of (10 - 40ºC), a leakage factor of (L = 0.27), and reversibility range (r = 0 to 1).
 
