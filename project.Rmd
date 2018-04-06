@@ -117,7 +117,7 @@ base_plot %+% C4 %+% aes(color = factor(L)) +
 
 # C3 vs C4
 
-```{r eval=TRUE}
+```{r eval=TRUE, warning=FALSE}
 C3C4 <- bind_rows(
   C3 %>% mutate(pathway = "C3", L = "N/A"),
   C4 %>% mutate(pathway = "C4", L = factor(L))
